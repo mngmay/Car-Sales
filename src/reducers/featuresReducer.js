@@ -96,6 +96,9 @@ export const featuresReducer = (state = initialState, action) => {
           if (car.id === action.payload.car.id) {
             return {
               ...car,
+              additionalPrice:
+                action.payload.car.additionalPrice -
+                action.payload.feature.price,
               car: {
                 ...action.payload.car.car,
                 features: [
