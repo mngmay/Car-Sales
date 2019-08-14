@@ -9,7 +9,6 @@ import Total from "./components/Total";
 import { addFeature, removeFeat } from "./actions/featuresActions";
 
 const App = props => {
-  console.log(props);
   const removeFeature = item => {
     props.removeFeat(item);
   };
