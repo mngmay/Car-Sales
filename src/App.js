@@ -1,48 +1,52 @@
-import React from 'react';
-
-import Header from './components/Header';
-import AddedFeatures from './components/AddedFeatures';
-import AdditionalFeatures from './components/AdditionalFeatures';
-import Total from './components/Total';
-
-const App = () => {
-  const state = {
-    additionalPrice: 0,
-    car: {
-      price: 26395,
-      name: '2019 Ford Mustang',
-      image:
-        'https://cdn.motor1.com/images/mgl/0AN2V/s1/2019-ford-mustang-bullitt.jpg',
-      features: []
-    },
-    store: [
-      { id: 1, name: 'V-6 engine', price: 1500 },
-      { id: 2, name: 'Racing detail package', price: 1500 },
-      { id: 3, name: 'Premium sound system', price: 500 },
-      { id: 4, name: 'Rear spoiler', price: 250 }
-    ]
-  };
-
-  const removeFeature = item => {
+import React from "react";
+import Car from "./components/Car";
+import { connect } from "react-redux";
+import { Route, Link } from "react-router-dom";
+import { addFeature } from "./actions/featuresActions";
+import { deleteFeature } from "./actions/featuresActions";
+const App = props => {
+  console.log(props);
+  const removeFeature = (item, car) => {
     // dispatch an action here to remove an item
+    props.deleteFeature(item, car);
   };
 
-  const buyItem = item => {
+  const buyItem = (item, car) => {
     // dipsatch an action here to add an item
+    props.addFeature(item, car);
   };
 
   return (
-    <div className="boxes">
-      <div className="box">
-        <Header car={state.car} />
-        <AddedFeatures car={state.car} />
-      </div>
-      <div className="box">
-        <AdditionalFeatures store={state.store} />
-        <Total car={state.car} additionalPrice={state.additionalPrice} />
-      </div>
+    <div>
+      {props.cars.map(car => {
+        return (
+          <Link to={`/${car.car.url}`}>
+            <button>{car.car.name}</button>
+          </Link>
+        );
+      })}
+      {props.cars.map(car => {
+        return (
+          <Route
+            path={`/${car.car.url}`}
+            render={props => (
+              <Car car={car} removeFeature={removeFeature} buyItem={buyItem} />
+            )}
+          />
+        );
+      })}
+      <Route path="/" exact />
     </div>
   );
 };
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    cars: state.cars
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { addFeature, deleteFeature }
+)(App);
